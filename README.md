@@ -1,31 +1,34 @@
 # ClipForge AI
 
-An early automatic-highlight clipping project. The web app is a mobile-friendly PWA; the Python API accepts a video file and creates short clips from high-audio-energy moments.
+Mobile-friendly PWA frontend plus a separate FastAPI video-processing service.
 
-## Run the API
+## Working in this first build
+- Upload a local video from Android or desktop.
+- Submit clip preferences to the backend.
+- Scan for high visual-change moments using a lightweight baseline heuristic.
+- Render vertical, square, or landscape MP4 clips with FFmpeg.
+- Poll job status and display resulting clip links.
 
-Requirements: Python 3.10+, FFmpeg (including ffprobe).
+## Not implemented yet
+This is a functional first processing pass, **not yet a semantic AI clipping model**. Prompt-aware event recognition, English speech transcription/subtitles, facecam detection/layout, chat spikes, and YouTube/Twitch/Kick source/chat integrations are not active yet. Settings for these are collected but not applied by the current detector. Process only media you own or are authorized to use.
 
+## Deploy the backend
+Deploy the `backend/` folder as a Docker web service on a host with FFmpeg and persistent disk. Set `DATA_DIR` to a writable persistent directory and `CORS_ORIGINS` to your GitHub Pages origin. Free hosts may sleep and impose CPU/storage limits.
+
+Then open the GitHub Pages site, paste the backend base URL into **Processing server URL**, upload a video, and tap **Generate clips**.
+
+## Run locally
 ```bash
 cd backend
-python -m venv .venv
-# activate the environment, then:
 pip install -r requirements.txt
-uvicorn main:app --host 0.0.0.0 --port 8000
+# Install ffmpeg separately and ensure ffmpeg and ffprobe are on PATH.
+uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
-Open `index.html` in a browser. The frontend defaults to `http://localhost:8000`. On Android, run the API on a reachable server and set the browser's `localStorage` value `clipforge_api` to that API base URL.
+## API
+- `GET /api/health`
+- `POST /api/jobs` (multipart upload + settings)
+- `GET /api/jobs/{id}`
+- `GET /clips/{filename}`
 
-## Current status
-
-- PWA frontend and upload/job/results flow.
-- FastAPI job API and FFmpeg rendering.
-- First-pass highlight selection based on audio energy.
-- Vertical, landscape and square output.
-- Stream URL ingestion, Twitch/Kick/YouTube chat, speech transcription, semantic prompt ranking, facecam-aware reframing and subtitles are **not implemented yet**. The prompt is collected for the future analysis pipeline but does not currently change scoring.
-
-Only process videos you own or have permission to download, edit and republish. This app does not bypass platform restrictions or download third-party streams.
-
-## Hosting note
-
-The GitHub Pages site can serve the frontend only. The Python API must run separately on a host with FFmpeg installed and enough disk/CPU for video processing. Free hosts may sleep or impose processing limits.
+Jobs currently live in memory; a backend restart clears job status.
