@@ -1,0 +1,1 @@
+ClipForge AI v0.1. First PWA shell only: responsive UI, local video selection and preview, installable manifest and service worker. AI detection, subtitles, automatic editing/export, and direct YouTube downloading are NOT implemented yet. Upload all files to the root of your GitHub Pages repository.
