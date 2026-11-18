@@ -34,11 +34,18 @@ uvicorn app:app --host 0.0.0.0 --port 8000
 Jobs currently live in memory; a backend restart clears job status.
 
 
-## Hybrid processing mode (v0.7)
-- **Automatic:** tries the configured cloud endpoint first, then falls back to local browser processing on the device.
+## Hybrid processing mode (v0.9)
+- **Automatic:** uses local Android/browser processing by default; tries the configured cloud endpoint only when one is explicitly set, then falls back to local processing.
 - **Phone only:** processes a selected video in the browser with FFmpeg.wasm.
 - **Cloud only:** uploads a selected video to a compatible ClipForge API server and polls for results.
 - The cloud adapter expects `GET /api/health`, `POST /api/jobs` (multipart fields: file, prompt, format, duration, quantity, captions, facecam, highlights), and `GET /api/jobs/{id}`.
 - No third-party cloud provider is preconfigured or guaranteed free. A provider must be verified as genuinely no-card/free and must support this API (or have a safe adapter) before it can be advertised as connected.
 - Cloud uploads send the selected video to the configured server. Only use a server you trust and media you are authorized to process. Do not enter private API keys or passwords in the public website.
 - Current local and backend detectors use visual scene-change heuristics, not semantic AI. YouTube/Twitch/Kick links are still not imported as media files.
+
+
+## Android reliability update (v0.9)
+- Automatic mode no longer makes a pointless request to an empty cloud URL; it starts local processing unless a cloud URL is configured.
+- Local export targets 720p to reduce phone memory and encoding load.
+- Local uploads are capped at 180 MB in this build as a conservative mobile limit. Actual device capability varies.
+- No cloud processor is connected or advertised as free until its signup, no-card terms, limits, and API compatibility are verified.
