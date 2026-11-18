@@ -49,3 +49,7 @@ Jobs currently live in memory; a backend restart clears job status.
 - Local export targets 720p to reduce phone memory and encoding load.
 - Local uploads are capped at 180 MB in this build as a conservative mobile limit. Actual device capability varies.
 - No cloud processor is connected or advertised as free until its signup, no-card terms, limits, and API compatibility are verified.
+
+
+## Synchronized audio + visual scoring (v0.2 backend)
+The backend now samples visual frame changes and audio RMS energy on a shared two-second timeline, normalizes both signals, and combines them (55% visual / 45% audio when an audio track is available) to rank candidate clip moments. Videos without an audio track fall back to visual scoring. This is signal-based moment ranking, not speech understanding or semantic AI: it does not yet interpret the user's prompt, identify specific events, detect chat spikes, transcribe speech, add subtitles, or locate/compose facecam. The Android-only browser processor has not been upgraded with this backend scoring; this feature is available only when a compatible backend is deployed and selected.
