@@ -32,3 +32,13 @@ uvicorn app:app --host 0.0.0.0 --port 8000
 - `GET /clips/{filename}`
 
 Jobs currently live in memory; a backend restart clears job status.
+
+
+## Hybrid processing mode (v0.7)
+- **Automatic:** tries the configured cloud endpoint first, then falls back to local browser processing on the device.
+- **Phone only:** processes a selected video in the browser with FFmpeg.wasm.
+- **Cloud only:** uploads a selected video to a compatible ClipForge API server and polls for results.
+- The cloud adapter expects `GET /api/health`, `POST /api/jobs` (multipart fields: file, prompt, format, duration, quantity, captions, facecam, highlights), and `GET /api/jobs/{id}`.
+- No third-party cloud provider is preconfigured or guaranteed free. A provider must be verified as genuinely no-card/free and must support this API (or have a safe adapter) before it can be advertised as connected.
+- Cloud uploads send the selected video to the configured server. Only use a server you trust and media you are authorized to process. Do not enter private API keys or passwords in the public website.
+- Current local and backend detectors use visual scene-change heuristics, not semantic AI. YouTube/Twitch/Kick links are still not imported as media files.
